@@ -12,14 +12,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $telephone = $_POST["telephone"];
     $parfum = $_POST["parfum"];
 
-    $sql = "INSERT INTO commandes (nom_client, telephone, parfum)
-            VALUES ('$nom_client', '$telephone', '$parfum')";
+    // Requete preparee : protege contre l'injection SQL et gere les apostrophes (ex: "Fleur d'Été")
+    $stmt = mysqli_prepare($conn, "INSERT INTO commandes (nom_client, telephone, parfum) VALUES (?, ?, ?)");
+    mysqli_stmt_bind_param($stmt, "sss", $nom_client, $telephone, $parfum);
 
-    if (mysqli_query($conn, $sql)) {
+    if (mysqli_stmt_execute($stmt)) {
         $message = "<div class='success-msg'>✅ Votre commande a été enregistrée avec succès ! Nous vous contacterons bientôt.</div>";
     } else {
         $message = "<div class='error-msg'>Erreur : " . mysqli_error($conn) . "</div>";
     }
+    mysqli_stmt_close($stmt);
 }
 ?>
 <!DOCTYPE html>
