@@ -30,6 +30,11 @@ if ($edition) {
     $p = $row;
 }
 
+// Categories deja utilisees (pour la liste automatique du formulaire)
+$cats_existantes = [];
+$rc = mysqli_query($conn, "SELECT DISTINCT categorie FROM produits WHERE categorie <> '' ORDER BY categorie");
+if ($rc) { while ($row = mysqli_fetch_assoc($rc)) $cats_existantes[] = $row['categorie']; }
+
 $page_title = $edition ? "Modifier un produit" : "Ajouter un produit";
 $active = "produits";
 include "admin_head.php";
@@ -66,7 +71,11 @@ include "admin_head.php";
 
             <div class="form-group">
                 <label>Catégorie *</label>
-                <input type="text" name="categorie" class="form-control" required placeholder="Ex: Eau de Parfum — Femme" value="<?php echo htmlspecialchars($p['categorie']); ?>">
+                <input type="text" name="categorie" class="form-control" required placeholder="Ex: Eau de Parfum — Femme" value="<?php echo htmlspecialchars($p['categorie']); ?>" list="cat_liste" autocomplete="off">
+                <datalist id="cat_liste">
+                    <?php foreach ($cats_existantes as $cat) echo '<option value="' . htmlspecialchars($cat) . '"></option>'; ?>
+                </datalist>
+                <div class="form-hint">Choisissez dans la liste ou saisissez une nouvelle catégorie.</div>
             </div>
 
             <div class="form-row">
