@@ -213,7 +213,31 @@ html {
   margin: 20px 0;
   border-bottom: 1px solid #eee;
   padding-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
 }
+
+.cart-item-info h3 { margin: 0 0 4px; font-size: 1rem; }
+.cart-item-info p { margin: 0; font-size: 0.85rem; color: #888; }
+
+.cart-item-remove {
+  border: none;
+  background: #f8d7da;
+  color: #c62828;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.cart-item-remove:hover { background: #f1a9b0; }
+
+.cart-empty { text-align: center; color: #999; font-style: italic; padding: 30px 0; }
 
 .checkout-btn {
   width: 100%;
@@ -222,7 +246,22 @@ html {
   color: white;
   border: none;
   border-radius: 25px;
+  cursor: pointer;
 }
+
+.clear-cart-btn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  background: transparent;
+  color: #c62828;
+  border: 1px solid #f1c0c0;
+  border-radius: 25px;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  transition: background 0.2s;
+}
+.clear-cart-btn:hover { background: #fdecec; }
 body {
     font-family: 'Montserrat', sans-serif;
     background-color: var(--cream-light);
@@ -2450,6 +2489,7 @@ body {
   <div id="cartItems"></div>
 
   <button class="checkout-btn" onclick="goToCommande()">Commander</button>
+  <button class="clear-cart-btn" onclick="clearCart()">Vider le panier</button>
 </div>
 <body>
 
@@ -3076,36 +3116,75 @@ function showToast(message) {
 // ============================================
 // ADD TO CART
 // ============================================
-function addToCart(productName) {
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-    cart.push(productName);
-    localStorage.setItem("cart", JSON.stringify(cart));
-
-    cartItemCount = cart.length;
-    document.getElementById("cartCount").textContent = cartItemCount;
-
-    showToast('"' + productName + '" ajouté au panier ! 🛍️');
+function getCart() {
+  return JSON.parse(localStorage.getItem("cart")) || [];
 }
-function showCart() {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  let cartItems = document.getElementById("cartItems");
 
+function saveCart(cart) {
+  localStorage.setItem("cart", JSON.stringify(cart));
+  cartItemCount = cart.length;
+  var badge = document.getElementById("cartCount");
+  if (badge) badge.textContent = cartItemCount;
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, function(c) {
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+  });
+}
+
+function addToCart(productName) {
+  var cart = getCart();
+  cart.push(productName);
+  saveCart(cart);
+  showToast('"' + productName + '" ajouté au panier ! 🛍️');
+  renderCart();
+}
+
+// Affiche le contenu du panier (regroupé par produit + bouton retirer)
+function renderCart() {
+  var cart = getCart();
+  var cartItems = document.getElementById("cartItems");
+  if (!cartItems) return;
   cartItems.innerHTML = "";
 
   if (cart.length === 0) {
-    cartItems.innerHTML = "<p>Votre panier est vide</p>";
-  } else {
-    cart.forEach(function(item) {
-      cartItems.innerHTML += `
-        <div class="cart-item">
-          <h3>${item}</h3>
-          <p>Quantité: 1</p>
-        </div>
-      `;
-    });
+    cartItems.innerHTML = '<p class="cart-empty">Votre panier est vide</p>';
+    return;
   }
 
+  var groups = {};
+  cart.forEach(function(item) { groups[item] = (groups[item] || 0) + 1; });
+
+  Object.keys(groups).forEach(function(name) {
+    var div = document.createElement("div");
+    div.className = "cart-item";
+    div.innerHTML =
+      '<div class="cart-item-info"><h3>' + escapeHtml(name) + '</h3>' +
+      '<p>Quantité : ' + groups[name] + '</p></div>' +
+      '<button class="cart-item-remove" title="Retirer">&times;</button>';
+    div.querySelector(".cart-item-remove").addEventListener("click", function() {
+      removeFromCart(name);
+    });
+    cartItems.appendChild(div);
+  });
+}
+
+// Retire toutes les occurrences d'un produit
+function removeFromCart(name) {
+  var cart = getCart().filter(function(item) { return item !== name; });
+  saveCart(cart);
+  renderCart();
+}
+
+// Vide entièrement le panier
+function clearCart() {
+  saveCart([]);
+  renderCart();
+}
+
+function showCart() {
+  renderCart();
   document.getElementById("cartDrawer").classList.add("active");
 }
 
@@ -3114,9 +3193,18 @@ function closeCart() {
 }
 
 function goToCommande() {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  var cart = getCart();
+  if (cart.length === 0) {
+    showToast('Votre panier est vide 🛒');
+    return;
+  }
   window.location.href = "commande.php?parfum=" + encodeURIComponent(cart.join(", "));
 }
+
+// Initialise le compteur au chargement (le panier peut déjà contenir des articles)
+document.addEventListener("DOMContentLoaded", function() {
+  saveCart(getCart());
+});
 
 
 function addToCartFromModal() {
