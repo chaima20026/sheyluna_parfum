@@ -6,8 +6,8 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     exit();
 }
 
-include "connexion.php";
-include "params.php";
+include "../connexion.php";
+include "../params.php";
 
 $flash = "";
 if (isset($_GET['msg']) && $_GET['msg'] === 'ok') {
@@ -85,7 +85,7 @@ include "admin_head.php";
                 <label>Image du bandeau (laisser vide pour garder l'actuelle)</label>
                 <input type="file" name="banner_image_file" class="form-control" accept="image/*">
                 <?php if (param('banner_image')): ?>
-                    <div class="current-thumb"><img src="<?php echo htmlspecialchars(param('banner_image')); ?>" class="thumb" onerror="this.style.display='none'"></div>
+                    <div class="current-thumb"><img src="../<?php echo htmlspecialchars(param('banner_image')); ?>" class="thumb" onerror="this.style.display='none'"></div>
                 <?php endif; ?>
             </div>
         </div>

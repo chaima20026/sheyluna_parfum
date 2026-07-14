@@ -6,7 +6,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     exit();
 }
 
-include "connexion.php";
+include "../connexion.php";
 
 $result = mysqli_query($conn, "SELECT * FROM produits ORDER BY genre, position, id");
 
@@ -51,7 +51,7 @@ include "admin_head.php";
                 <?php if (mysqli_num_rows($result) > 0): ?>
                     <?php while ($p = mysqli_fetch_assoc($result)): ?>
                         <tr>
-                            <td><img src="<?php echo htmlspecialchars($p['image']); ?>" alt="" class="thumb" onerror="this.style.visibility='hidden'"></td>
+                            <td><img src="../<?php echo htmlspecialchars($p['image']); ?>" alt="" class="thumb" onerror="this.style.visibility='hidden'"></td>
                             <td>
                                 <strong><?php echo htmlspecialchars($p['nom']); ?></strong><br>
                                 <span style="font-size:0.8rem;color:#999;"><?php echo htmlspecialchars($p['categorie']); ?></span>

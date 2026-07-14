@@ -7,7 +7,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     exit();
 }
 
-include "connexion.php";
+include "../connexion.php";
 
 // Recherche (nom, telephone ou parfum)
 $recherche = isset($_GET['q']) ? trim($_GET['q']) : "";

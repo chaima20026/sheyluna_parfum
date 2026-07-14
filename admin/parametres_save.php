@@ -6,7 +6,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     exit();
 }
 
-include "connexion.php";
+include "../connexion.php";
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     header("Location: admin_parametres.php");
@@ -39,7 +39,7 @@ if (isset($_FILES['banner_image_file']) && $_FILES['banner_image_file']['error']
         finfo_close($finfo);
         $exts = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp', 'image/gif' => 'gif'];
         if (isset($exts[$mime])) {
-            $dossier = __DIR__ . "/images/produits";
+            $dossier = __DIR__ . "/../images/produits";
             if (!is_dir($dossier)) mkdir($dossier, 0755, true);
             $fichier = 'banner-' . uniqid() . '.' . $exts[$mime];
             if (move_uploaded_file($tmp, $dossier . '/' . $fichier)) {

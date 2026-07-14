@@ -6,7 +6,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     exit();
 }
 
-include "connexion.php";
+include "../connexion.php";
 
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
@@ -25,7 +25,7 @@ if (isset($_GET['id'])) {
 
     // Supprime le fichier image seulement s'il est dans images/produits/
     if ($row && strpos($row['image'], 'images/produits/') === 0) {
-        $chemin = __DIR__ . '/' . $row['image'];
+        $chemin = __DIR__ . '/../' . $row['image'];
         if (is_file($chemin)) {
             @unlink($chemin);
         }

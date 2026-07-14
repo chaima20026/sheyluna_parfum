@@ -6,7 +6,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     exit();
 }
 
-include "connexion.php";
+include "../connexion.php";
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $edition = $id > 0;
@@ -57,7 +57,7 @@ include "admin_head.php";
                 <label>Image <?php echo $edition ? '(laisser vide pour garder l\'actuelle)' : '*'; ?></label>
                 <input type="file" name="image" class="form-control" accept="image/*" <?php echo $edition ? '' : 'required'; ?>>
                 <?php if ($edition && !empty($c['image'])): ?>
-                    <div class="current-thumb"><img src="<?php echo htmlspecialchars($c['image']); ?>" class="thumb" onerror="this.style.display='none'"></div>
+                    <div class="current-thumb"><img src="../<?php echo htmlspecialchars($c['image']); ?>" class="thumb" onerror="this.style.display='none'"></div>
                 <?php endif; ?>
             </div>
 

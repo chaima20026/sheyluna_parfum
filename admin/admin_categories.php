@@ -6,7 +6,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     exit();
 }
 
-include "connexion.php";
+include "../connexion.php";
 
 $result = mysqli_query($conn, "SELECT * FROM categories ORDER BY position, id");
 
@@ -36,7 +36,7 @@ include "admin_head.php";
                 <?php if (mysqli_num_rows($result) > 0): ?>
                     <?php while ($c = mysqli_fetch_assoc($result)): ?>
                         <tr>
-                            <td><img src="<?php echo htmlspecialchars($c['image']); ?>" alt="" class="thumb" onerror="this.style.visibility='hidden'"></td>
+                            <td><img src="../<?php echo htmlspecialchars($c['image']); ?>" alt="" class="thumb" onerror="this.style.visibility='hidden'"></td>
                             <td><strong><?php echo htmlspecialchars($c['titre']); ?></strong></td>
                             <td><?php echo htmlspecialchars((string)$c['nombre_texte']); ?></td>
                             <td>

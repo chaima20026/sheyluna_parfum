@@ -6,7 +6,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     exit();
 }
 
-include "connexion.php";
+include "../connexion.php";
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     header("Location: admin_produits.php");
@@ -68,7 +68,7 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
     if (!isset($extensions[$mime])) {
         erreur("Format d'image non supporté (JPG, PNG, WEBP ou GIF uniquement).", $id);
     }
-    $dossier = __DIR__ . "/images/produits";
+    $dossier = __DIR__ . "/../images/produits";
     if (!is_dir($dossier)) {
         mkdir($dossier, 0755, true);
     }

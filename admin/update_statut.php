@@ -7,7 +7,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     exit();
 }
 
-include "connexion.php";
+include "../connexion.php";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id'], $_POST['statut'])) {
     $id = intval($_POST['id']);

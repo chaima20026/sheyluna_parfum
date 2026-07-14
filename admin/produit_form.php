@@ -6,7 +6,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     exit();
 }
 
-include "connexion.php";
+include "../connexion.php";
 
 // Mode edition si un id est fourni
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -94,7 +94,7 @@ include "admin_head.php";
                 <input type="file" name="image" class="form-control" accept="image/*" <?php echo $edition ? '' : 'required'; ?>>
                 <div class="form-hint">Formats acceptés : JPG, PNG, WEBP, GIF — 3 Mo max.</div>
                 <?php if ($edition && !empty($p['image'])): ?>
-                    <div class="current-thumb"><img src="<?php echo htmlspecialchars($p['image']); ?>" class="thumb" onerror="this.style.display='none'"></div>
+                    <div class="current-thumb"><img src="../<?php echo htmlspecialchars($p['image']); ?>" class="thumb" onerror="this.style.display='none'"></div>
                 <?php endif; ?>
             </div>
 
