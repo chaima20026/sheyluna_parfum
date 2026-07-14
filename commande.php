@@ -215,7 +215,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <button type="submit" class="btn-submit">Confirmer la Commande</button>
     </form>
 
-    <a href="index.html" class="back-link">← Retour à la boutique</a>
+    <a href="index.php" class="back-link">← Retour à la boutique</a>
 </div>
 
 </body>
