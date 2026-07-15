@@ -118,6 +118,7 @@ include "admin_head.php";
                                 </form>
                             </td>
                             <td>
+                                <a href="bon_commande.php?id=<?php echo $row['id']; ?>" class="btn-download" target="_blank">Bon de commande</a>
                                 <a href="delete_commande.php?id=<?php echo $row['id']; ?>" class="btn-delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette commande ?');">Supprimer</a>
                             </td>
                         </tr>

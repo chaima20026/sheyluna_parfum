@@ -112,7 +112,8 @@ if (!isset($active))     $active = "";
         .btn-gold:hover { opacity: 0.9; box-shadow: 0 6px 15px rgba(201,169,110,0.35); }
         .btn-edit { background-color: #eef2ff; color: #3b5bdb; padding: 8px 12px; font-size: 0.85rem; border-radius: 5px; }
         .btn-delete { background-color: var(--red-delete); color: white; padding: 8px 12px; font-size: 0.85rem; border-radius: 5px; }
-        .btn-edit:hover, .btn-delete:hover { opacity: 0.8; }
+        .btn-download { background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark)); color: white; padding: 8px 12px; font-size: 0.85rem; border-radius: 5px; margin-right: 6px; }
+        .btn-edit:hover, .btn-delete:hover, .btn-download:hover { opacity: 0.8; }
         /* Badges */
         .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; }
         .badge-new { background: #e7f5ff; color: #1971c2; }
