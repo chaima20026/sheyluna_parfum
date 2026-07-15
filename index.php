@@ -27,6 +27,7 @@ $pdata = array_map(function ($p) {
         'desc'     => $p['description'],
         'notes'    => array_values(array_filter(array_map('trim', explode(',', (string)$p['notes_liste'])))),
         'reviews'  => $p['avis'],
+        'stock'    => (int) ($p['stock'] ?? 0),
     ];
 }, $produits);
 
@@ -45,14 +46,19 @@ function sheyluna_stars($note) {
 function sheyluna_card($p, $index) {
     $nom   = htmlspecialchars($p['nom']);
     $nomJs = htmlspecialchars(json_encode($p['nom'], JSON_UNESCAPED_UNICODE), ENT_QUOTES);
+    $rupture = ((int) ($p['stock'] ?? 0) <= 0);
     ob_start(); ?>
-            <div class="arrival-card animate-on-scroll" onclick="openModal(<?php echo $index; ?>)">
-                <?php if (!empty($p['badge'])): ?><span class="arrival-card-badge <?php echo $p['badge_type']==='hot'?'hot':'new'; ?>"><?php echo htmlspecialchars($p['badge']); ?></span><?php endif; ?>
+            <div class="arrival-card animate-on-scroll<?php echo $rupture ? ' out-of-stock' : ''; ?>" onclick="openModal(<?php echo $index; ?>)">
+                <?php if ($rupture): ?>
+                    <span class="arrival-card-badge rupture">Rupture de stock</span>
+                <?php elseif (!empty($p['badge'])): ?>
+                    <span class="arrival-card-badge <?php echo $p['badge_type']==='hot'?'hot':'new'; ?>"><?php echo htmlspecialchars($p['badge']); ?></span>
+                <?php endif; ?>
                 <button class="arrival-card-wishlist" onclick="event.stopPropagation(); toggleWishlist(this)"><i class="far fa-heart"></i></button>
                 <div class="arrival-card-image">
                     <img src="<?php echo htmlspecialchars($p['image']); ?>" alt="<?php echo $nom; ?>">
                     <div class="arrival-card-overlay">
-                        <button class="overlay-btn" onclick="event.stopPropagation(); addToCart(<?php echo $nomJs; ?>)"><i class="fas fa-shopping-bag"></i></button>
+                        <button class="overlay-btn" <?php echo $rupture ? 'disabled' : 'onclick="event.stopPropagation(); addToCart(' . $nomJs . ')"'; ?>><i class="fas fa-shopping-bag"></i></button>
                         <button class="overlay-btn" onclick="event.stopPropagation(); openModal(<?php echo $index; ?>)"><i class="fas fa-eye"></i></button>
                         <button class="overlay-btn"><i class="fas fa-expand"></i></button>
                     </div>
@@ -70,7 +76,11 @@ function sheyluna_card($p, $index) {
                             <span class="current"><?php echo htmlspecialchars($p['prix']); ?></span>
                             <?php if (!empty($p['prix_original'])): ?><span class="original"><?php echo htmlspecialchars($p['prix_original']); ?></span><?php endif; ?>
                         </div>
-                        <button class="btn-add-cart" onclick="event.stopPropagation(); addToCart(<?php echo $nomJs; ?>)">Ajouter</button>
+                        <?php if ($rupture): ?>
+                            <button class="btn-add-cart" disabled>Épuisé</button>
+                        <?php else: ?>
+                            <button class="btn-add-cart" onclick="event.stopPropagation(); addToCart(<?php echo $nomJs; ?>)">Ajouter</button>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -1086,6 +1096,25 @@ body {
 
 .arrival-card-badge.hot {
     background: linear-gradient(135deg, #e74c3c, #e67e22);
+}
+
+.arrival-card-badge.rupture {
+    background: linear-gradient(135deg, #555, #2d2d2d);
+    letter-spacing: 0.5px;
+}
+
+/* Produit en rupture de stock */
+.arrival-card.out-of-stock .arrival-card-image img {
+    filter: grayscale(70%) opacity(0.65);
+}
+
+.btn-add-cart:disabled,
+.overlay-btn:disabled {
+    background: #cfcfcf;
+    color: #777;
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.8;
 }
 
 .arrival-card-wishlist {
@@ -2299,6 +2328,14 @@ body {
     box-shadow: 0 5px 20px rgba(201, 169, 110, 0.4);
 }
 
+.modal-add-cart:disabled {
+    background: #cfcfcf;
+    color: #777;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
 .modal-wishlist-btn {
     width: 50px;
     height: 50px;
@@ -3262,6 +3299,18 @@ function openModal(index) {
         tag.textContent = note;
         notesContainer.appendChild(tag);
     });
+
+    // Bouton d'ajout : desactive si le produit est en rupture de stock
+    var addBtn = document.getElementById('modalAddCart');
+    if (addBtn) {
+        if (Number(product.stock) <= 0) {
+            addBtn.disabled = true;
+            addBtn.innerHTML = 'Rupture de stock';
+        } else {
+            addBtn.disabled = false;
+            addBtn.innerHTML = '<i class="fas fa-shopping-bag"></i> Ajouter au Panier';
+        }
+    }
 
     document.getElementById('modalOverlay').classList.add('active');
     document.body.style.overflow = 'hidden';

@@ -18,6 +18,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (mysqli_stmt_execute($stmt)) {
         $message = "<div class='success-msg'>✅ Votre commande a été enregistrée avec succès ! Nous vous contacterons bientôt.</div>";
+
+        // Decremente automatiquement le stock des parfums commandes.
+        // Le champ "parfum" contient les noms separes par ", " (repetes selon la quantite).
+        $items = array_filter(array_map('trim', explode(',', $parfum)));
+        $quantites = [];
+        foreach ($items as $nom_parfum) {
+            $quantites[$nom_parfum] = ($quantites[$nom_parfum] ?? 0) + 1;
+        }
+        if ($quantites) {
+            $upd = mysqli_prepare($conn, "UPDATE produits SET stock = GREATEST(stock - ?, 0) WHERE nom = ?");
+            foreach ($quantites as $nom_parfum => $qte) {
+                mysqli_stmt_bind_param($upd, "is", $qte, $nom_parfum);
+                mysqli_stmt_execute($upd);
+            }
+            mysqli_stmt_close($upd);
+        }
     } else {
         $message = "<div class='error-msg'>Erreur : " . mysqli_error($conn) . "</div>";
     }

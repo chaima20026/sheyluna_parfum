@@ -40,6 +40,7 @@ if ($note_etoiles > 5) $note_etoiles = 5;
 $avis         = trim($_POST['avis'] ?? '');
 $position     = (int) ($_POST['position'] ?? 0);
 $actif        = isset($_POST['actif']) ? 1 : 0;
+$stock        = max(0, (int) ($_POST['stock'] ?? 0));
 $est_bestseller  = isset($_POST['est_bestseller']) ? 1 : 0;
 $bestseller_rang = (int) ($_POST['bestseller_rang'] ?? 0);
 $prix_orig    = $prix_orig === '' ? null : $prix_orig;
@@ -89,20 +90,20 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
 if ($edition) {
     $stmt = mysqli_prepare($conn,
         "UPDATE produits SET nom=?, genre=?, categorie=?, prix=?, prix_original=?, image=?, badge=?, badge_type=?,
-         note_courte=?, description=?, notes_liste=?, note_etoiles=?, avis=?, position=?, actif=?, est_bestseller=?, bestseller_rang=? WHERE id=?");
-    mysqli_stmt_bind_param($stmt, "sssssssssssdsiiiii",
+         note_courte=?, description=?, notes_liste=?, note_etoiles=?, avis=?, position=?, actif=?, stock=?, est_bestseller=?, bestseller_rang=? WHERE id=?");
+    mysqli_stmt_bind_param($stmt, "sssssssssssdsiiiiii",
         $nom, $genre, $categorie, $prix, $prix_orig, $image, $badge, $badge_type,
-        $note_courte, $description, $notes_liste, $note_etoiles, $avis, $position, $actif, $est_bestseller, $bestseller_rang, $id);
+        $note_courte, $description, $notes_liste, $note_etoiles, $avis, $position, $actif, $stock, $est_bestseller, $bestseller_rang, $id);
     mysqli_stmt_execute($stmt);
     header("Location: admin_produits.php?msg=modif");
 } else {
     $stmt = mysqli_prepare($conn,
         "INSERT INTO produits
-         (nom, genre, categorie, prix, prix_original, image, badge, badge_type, note_courte, description, notes_liste, note_etoiles, avis, position, actif, est_bestseller, bestseller_rang)
-         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-    mysqli_stmt_bind_param($stmt, "sssssssssssdsiiii",
+         (nom, genre, categorie, prix, prix_original, image, badge, badge_type, note_courte, description, notes_liste, note_etoiles, avis, position, actif, stock, est_bestseller, bestseller_rang)
+         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+    mysqli_stmt_bind_param($stmt, "sssssssssssdsiiiii",
         $nom, $genre, $categorie, $prix, $prix_orig, $image, $badge, $badge_type,
-        $note_courte, $description, $notes_liste, $note_etoiles, $avis, $position, $actif, $est_bestseller, $bestseller_rang);
+        $note_courte, $description, $notes_liste, $note_etoiles, $avis, $position, $actif, $stock, $est_bestseller, $bestseller_rang);
     mysqli_stmt_execute($stmt);
     header("Location: admin_produits.php?msg=ajout");
 }

@@ -17,7 +17,7 @@ $p = [
     'nom' => '', 'genre' => 'Femme', 'categorie' => '', 'prix' => '', 'prix_original' => '',
     'image' => '', 'badge' => '', 'badge_type' => '', 'note_courte' => '', 'description' => '',
     'notes_liste' => '', 'note_etoiles' => '5.0', 'avis' => '', 'position' => '0', 'actif' => 1,
-    'est_bestseller' => 0, 'bestseller_rang' => '0',
+    'stock' => '0', 'est_bestseller' => 0, 'bestseller_rang' => '0',
 ];
 
 if ($edition) {
@@ -86,6 +86,11 @@ include "admin_head.php";
                 <div class="form-group">
                     <label>Prix barré (optionnel)</label>
                     <input type="text" name="prix_original" class="form-control" placeholder="Ex: 70 MAD" value="<?php echo htmlspecialchars($p['prix_original'] ?? ''); ?>">
+                </div>
+                <div class="form-group">
+                    <label>Stock (quantité)</label>
+                    <input type="number" name="stock" class="form-control" min="0" value="<?php echo htmlspecialchars((string)$p['stock']); ?>">
+                    <div class="form-hint">0 = rupture de stock (le produit reste visible mais non commandable).</div>
                 </div>
             </div>
 

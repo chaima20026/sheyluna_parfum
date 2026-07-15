@@ -42,6 +42,7 @@ include "admin_head.php";
                     <th>Nom</th>
                     <th>Genre</th>
                     <th>Prix</th>
+                    <th>Stock</th>
                     <th>Badge</th>
                     <th>Visible</th>
                     <th>Actions</th>
@@ -64,6 +65,19 @@ include "admin_head.php";
                                 <?php endif; ?>
                             </td>
                             <td>
+                                <?php
+                                    $stock = (int) ($p['stock'] ?? 0);
+                                    if ($stock <= 0) {
+                                        $stock_class = 'badge-annulee'; $stock_txt = 'Rupture';
+                                    } elseif ($stock <= 5) {
+                                        $stock_class = 'badge-attente'; $stock_txt = $stock . ' (bas)';
+                                    } else {
+                                        $stock_class = 'badge-traitee'; $stock_txt = (string) $stock;
+                                    }
+                                ?>
+                                <span class="badge <?php echo $stock_class; ?>"><?php echo htmlspecialchars($stock_txt); ?></span>
+                            </td>
+                            <td>
                                 <?php if (!empty($p['badge'])): ?>
                                     <span class="badge badge-<?php echo $p['badge_type'] === 'hot' ? 'hot' : 'new'; ?>"><?php echo htmlspecialchars($p['badge']); ?></span>
                                 <?php else: ?>
@@ -84,7 +98,7 @@ include "admin_head.php";
                         </tr>
                     <?php endwhile; ?>
                 <?php else: ?>
-                    <tr><td colspan="7" class="empty-state">Aucun produit. Cliquez sur « Ajouter un produit ».</td></tr>
+                    <tr><td colspan="8" class="empty-state">Aucun produit. Cliquez sur « Ajouter un produit ».</td></tr>
                 <?php endif; ?>
             </tbody>
         </table>

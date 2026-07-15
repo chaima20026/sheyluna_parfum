@@ -23,5 +23,6 @@ CREATE TABLE IF NOT EXISTS produits (
     avis          VARCHAR(40)  DEFAULT NULL,        -- ex: "127 avis"
     position      INT NOT NULL DEFAULT 0,           -- ordre d'affichage
     actif         TINYINT(1) NOT NULL DEFAULT 1,    -- 1 = visible sur le site
+    stock         INT NOT NULL DEFAULT 0,           -- quantite en stock (0 = rupture)
     date_ajout    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
